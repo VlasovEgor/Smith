@@ -1,20 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Zenject;
 
 public class EnviromentInstaller : MonoInstaller
 {
-    [FormerlySerializedAs("_obstaclesSpawner")] [SerializeField] private SegmentsSpawner segmentsSpawner;
+    [SerializeField] private SegmentsSpawner _segmentsSpawner;
     
     public override void InstallBindings()
     {
-        BindObstaclesSpawner();
+        BindSegmentsSpawner();
     }
 
-    private void BindObstaclesSpawner()
+    private void BindSegmentsSpawner()
     {
-        Container.Bind<SegmentsSpawner>().AsSingle();
+        Container.BindInterfacesAndSelfTo<SegmentsSpawner>().FromInstance(_segmentsSpawner).AsSingle();
     }
 }

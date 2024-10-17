@@ -1,9 +1,10 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 using Random = UnityEngine.Random;
 
-public class SegmentsSpawner : MonoBehaviour
+public class SegmentsSpawner : MonoBehaviour, IInitializable , IDisposable
 {
     [SerializeField] private List<GameObject> _segmentsList;
 
@@ -13,15 +14,39 @@ public class SegmentsSpawner : MonoBehaviour
     private SpeedObjects _speedObjects;
 
     private float _currentTime;
+    
+    private bool _gameStarted;
+    private LevelManager _levelManager;
 
     [Inject]
-    private void Construct(SpeedObjects speedObjects)
+    private void Construct(SpeedObjects speedObjects, LevelManager levelManager)
     {
         _speedObjects = speedObjects;
+        _levelManager = levelManager;
+    }
+    
+    public void Initialize()
+    {
+        _levelManager.GameStarted += StartGame;
+    }
+
+    public void Dispose()
+    {
+        _levelManager.GameStarted -= StartGame;
+    }
+
+    private void StartGame()
+    {
+        _gameStarted = true;
     }
     
     private void Update()
     {
+        if (!_gameStarted)
+        {
+            return;
+        }
+        
         UpdateSpawnTimer();
     }
 
@@ -47,4 +72,6 @@ public class SegmentsSpawner : MonoBehaviour
         IMovable movable = obstacle.GetComponent<IMovable>();
         movable.SetSpeed(_speedObjects.Speed);
     }
+
+   
 }

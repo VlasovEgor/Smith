@@ -8,6 +8,7 @@ public class GameContextInstaller : MonoInstaller
     [SerializeField] private InputSystem _inputSystem;
     [SerializeField] private Storage _storage;
     [SerializeField] private Score _score;
+    [SerializeField] private LevelManager _levelManager;
     
     public override void InstallBindings()
     {
@@ -16,6 +17,7 @@ public class GameContextInstaller : MonoInstaller
         BindInputSystem();
         BindStorage();
         BindScore();
+        BindLevelManager();
     }
 
     private void BindSpeedObjects()
@@ -41,5 +43,10 @@ public class GameContextInstaller : MonoInstaller
     private void BindScore()
     {
         Container.BindInterfacesAndSelfTo<Score>().FromInstance(_score).AsSingle();
+    }
+    
+    private void BindLevelManager()
+    {
+        Container.BindInterfacesAndSelfTo<LevelManager>().FromInstance(_levelManager).AsSingle();
     }
 }

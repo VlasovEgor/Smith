@@ -10,6 +10,7 @@ public class Score : MonoBehaviour, IInitializable, IDisposable
     
     private Bag _bag;
     private ValueRewards _valueRewards;
+    private LevelManager _levelManager;
     
     private int _diamondScore;
     private int _emiralcore;
@@ -21,26 +22,40 @@ public class Score : MonoBehaviour, IInitializable, IDisposable
     private int _score;
     private float _timeSinceLastUpdate;
     
+    private bool _gameStarted;
+    
     [Inject]
-    public void Construct(Entity entity, ValueRewards valueRewards)
+    public void Construct(Entity entity, ValueRewards valueRewards, LevelManager levelManager)
     {
         _bag = entity.GetComponentImplementing<Bag>();
         _valueRewards = valueRewards;
+        _levelManager = levelManager;
     }
     
     public void Initialize()
     {
         _bag.RewardAdded += AddReward;
+        _levelManager.GameStarted += StartGame;
     }
     
     public void Dispose()
     {
         _bag.RewardAdded -= AddReward;
+        _levelManager.GameStarted -= StartGame;
     }
 
+    private void StartGame()
+    {
+        _gameStarted = true;
+    }
 
     private void Update()
-    {
+    {   
+        if (!_gameStarted)
+        {
+            return;
+        }
+        
         AddScore();
     }
 
